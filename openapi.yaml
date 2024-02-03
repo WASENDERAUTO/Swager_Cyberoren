@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+  title: Dokumen API Cloud Function - OpenAPI 3.0
+  description: >-
+    Dokumentasi API Cloud Function - Cyberoren
+  termsOfService: https://github.com/WASENDERAUTO/swagger
+  contact:
+    url: https://github.com/WASENDERAUTO
+  license:
+    name: trensentimen Package
+    url: https://pkg.go.dev/github.com/WASENDERAUTO/backren
+  version: 1.0.11
+externalDocs:
+  description: Repository GCF
+  url: https://github.com/WASENDERAUTO/backren/gcf
+servers:
+  - url: https://asia-southeast2-marjuniati-putri.cloudfunctions.net/
+tags:
+  - name: register
+    description: register User
+    externalDocs:
+      description: Deskripsi dan Kode Program
+      url: https://github.com/WASENDERAUTO
+  - name: login
+    description: Auth to Access to API
+    externalDocs:
+      description: Deskripsi dan Kode Program
+      url: https://github.com/WASENDERAUTO
+  - name: users
+    description: Get Token and Authorize
+
+paths:
+  /wasenderauto-signup:
+    post:
+      tags:
+        - register
+      summary: Register Data User
+      description: Register Data User
+      operationId: authService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Register"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Register"
+        "405":
+          description: Invalid input
+  /wasenderauto-login:
+    post:
+      tags:
+        - login
+      summary: Login get Token
+      description: Login and Get User Token
+      operationId: authService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "405":
+          description: Invalid input
+      security:
+        - token:
+            - write:apiKey
+            - read:apiKey
+  /wasenderauto-users?username=:
+    post:
+      tags:
+        - users
+      summary: Add Topic
+      description: Menambah Topik
+      operationId: authService
+      parameters:
+        - name: username
+          in: query
+          description: username
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+        "405":
+          description: Invalid input
+      security:
+        - token:
+            - write:apiKey
+            - read:apiKey
+  /wasenderauto-users:
+    get:
+      tags:
+        - users
+      summary: Get All Data User
+      description: Mendapatkan Semua Data User
+      operationId: authService
+      responses:
+        "200":
+          description: successful operation
+
+        "405":
+          description: Invalid input
+      security:
+        - token:
+            - write:apiKey
+            - read:apiKey
+
+components:
+  schemas:
+    Register:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Budi Wati
+        username:
+          type: string
+          example: budiwati
+        email:
+          type: string
+          example: email@gmail.com
+        phone_number:
+          type: string
+          example: 628123456789
+        password:
+          type: string
+          example: secret
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          example: cyberoren@gmail.com
+        password:
+          type: string
+          example: secret
+
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: bool
+          example: true
+        message:
+          type: string
+          example: login berhasil
+        token:
+          type: string
+          example: abcd1234
+
+  securitySchemes:
+    token:
+      type: apiKey
+      name: Authorization
+      in: header
